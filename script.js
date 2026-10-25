@@ -128,7 +128,25 @@ $('toggle').addEventListener('click', () => {
     }
 })
 
+$('reset').addEventListener('click', () => {
+    for (const [name, id, max] of [
+        ['focus', 'focusMinutes', 180],
+        ['short', 'shortMinutes', 60],
+        ['long', 'longMinutes', 120]
+    ]) {
+        const n = Number($(id).value);
+        if (!Number.isInteger(n) || n < 1 || n > max) {
+            alert(`Please enter 1–${max} minutes for ${name}.`);
+            return;
+        }
+        modes[name] = n;
+    }
 
+    select(mode);
+    say('new timer settings saved! 🌷')
+});
+
+render();
 
 
 
