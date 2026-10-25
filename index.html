@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>pomopet | pomodoro timer</title>
+        <style>
+            :root {
+                font-family:ui-rounded,"SF Pro Rounded", system-ui, sans-serif;
+                color: #514653;
+                background: #fff5f4;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                place-items: center;
+                padding: 22px;
+                background: radial-gradient(circle at 20% 10%, #ffe2ee 0, transparent 32%),radial-gradient(circle at 90% 80%,#e3f7f3 0, transparent 35%),#fff7ee;
+            }
+            .app {
+                width:min(440px,100%);
+                padding: 30px;
+                border-radius: 30px;
+                background: #ffffffdb;
+                box-shadow: 0 20px 60px #8a68701f;
+                text-align: center;
+                border: 2px solid #fff;
+            }
+            h1 {
+                margin: 0;
+                font-size: 29px;
+                color: #6c5366;
+            }
+            .subtitle {
+                margin: 7px 0 22px;
+                color: #96848f;
+                font-size: 14px;
+            }
+            .tabs {
+                display: flex;
+                gap: 8px;
+                background: #fff0f2;
+                padding: 6px;
+                border-radius: 17px;
+            }
+            button {
+                flex: 1;
+                border: 0;
+                background: transparent;
+                padding: 12px 4px;
+                border-radius: 12px;
+                color: #937987;
+                font-weight: 750;
+                cursor: pointer;
+            }
+            .tabs button.archive {
+                background: #fff;
+                color: #d06d8c;
+                box-shadow: 0 3px 10px #ba91a330;
+            }
+            .pet-zone {
+                height: 215px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+            .bubble {
+                font-size: 13px;
+                background: white;
+                border: 1px solid #f8dae4;
+                border-radius: 18px;
+                padding: 9px 15px;
+                margin: 10px 0 0;
+                box-shadow: 0 4px 12px 
+            }
+        </style>
+    </head>
+</html>
