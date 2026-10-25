@@ -77,7 +77,107 @@
                 border-radius: 18px;
                 padding: 9px 15px;
                 margin: 10px 0 0;
-                box-shadow: 0 4px 12px 
+                box-shadow: 0 4px 12px #a06c7b14
+            }
+            .pet {
+                position: relative;
+                width: 150px;
+                height: 132px;
+                margin-top: 20px;
+                background: #f6bdac;
+                border: 4px solid #aa7979;
+                border-radius: 49% 49% 43% 43%;
+                animation: breathe 2.6s ease-in-out infinite;
+                box-shadow: inset -10px -11px #f0a69f, 0 9px #f2dfdb
+            }
+            .ear {
+                position: absolute;
+                top: -36px;
+                width: 54px;
+                height: 67px;
+                background: #f6dcac;
+                border: 4px solid #aa7979;
+                border-radius: 60% 60% 25% 25%;
+                z-index: -1;
+            }
+
+            .ear.left {
+                left: 8px;
+                transform: rotate(-19deg)
+            }
+            .ear.right {
+                right: 8px;
+                transform: rotate(19deg)
+            }
+            .ear:after {
+                content: "";
+                position: absolute;
+                inset: 12px 11px 9px;
+                background: #e89aa4;
+                border-radius: inherit;
+            }
+            .eye {
+                position: absolute;
+                top: 54px;
+                width: 11px;
+                height: 14px;
+                background: #684d56;
+                border-radius: 50%
+            }
+            .eye.left {
+                left: 42px;
+            }
+            .eye.right {
+                right: 42px;
+            }
+            .nose {
+                position: abosolute;
+                left: 66px;
+                top: 72px;
+                width: 12px;
+                height: 9px;
+                background: #ad6778;
+                border-radius: 50%;
+            }
+            .cheek {
+                position: absolute;
+                top: 77px;
+                width: 24px;
+                height: 12px;
+                border-radius: 50%;
+                background: #ee909e;
+                opacity: .8
+            }
+            .cheek.left {
+                left: 18px;
+            }
+            .cheek.right {
+                right: 18px;
+            }
+            .mouth {
+                position: absolute;
+                top: 87px;
+                left: 66px;
+                width: 13px;
+                height: 9px;
+                border: 2px solid #9c6773;
+                border-top: 0;
+                border-radius: 0 0 50% 50;
+            }
+            .pet.sleepy .eye {
+                height: 4px;
+                top: 62px;
+                border-radius: 50%
+            }
+            .pet.happy {
+                animation: bounce .6s ease-in-out infinite alternate
+            }
+            .sparkle {
+                position: absolute;
+                top: 38px;
+                right: 52px;
+                color: #e4a447;
+                font-size: 25px;
             }
         </style>
     </head>
