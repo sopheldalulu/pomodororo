@@ -87,8 +87,48 @@ function finish() {
     } catch {}
 
     try {
-        
-    }
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = 660;
+        gain.gain.setValueAtTime(.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + .35);
+    } catch {}
 
 }
+
+function tick() {
+    remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+    if (!remaining) finish();
+    else render();
+}
+
+$('toggle').addEventListener('click', () => {
+    if (interval) {
+        tick();
+        stop();
+        say('a little pause is okay');
+        render();
+        return;
+    }
+
+    if (remaining === 0) remaining = duration();
+    endAt = Date.now() + remaining * 1000;
+    interva = setInterval(tick, 250);
+    $('pet').classList.remove('happy');
+    say (mode === 'focus' ? 'shh bunny is focusing with u 🍓' : 'breathe in, breathe out');
+    render();
+
+    if ('Notification' in window && Notification.permission == 'default') {
+        Notification.requestPermission().catch(() => {});
+    }
+})
+
+
+
+
 
