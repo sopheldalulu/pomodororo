@@ -51,6 +51,22 @@
 
         <button id="feedBunny" type="button">🥕 feed bunny</button>
       </div>
+
+      <div class="happiness-section">
+        <div class="happiness-level">
+          <span>bunny happiness 💗</span>
+          <strong id="happinessValue">70 / 100</strong>
+        </div>
+
+        <div class="happiness-track" id="happinessMeter" role="progressbar" aria-label="bunny happiness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+          <div class="happiness-fill" id="happinessFill"></div>
+        </div>
+
+        <p class="happiness-mood" id="happinessMood">
+          feeling cozy ♡
+        </p>
+      </div>
+
     </div>
 
     <div class="time" id="time" role="timer" aria-label="Time remaining">25:00</div>
