@@ -231,3 +231,15 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
   .time { font-size: 54px; }
   .tabs button { font-size: 12px; }
 }
+
+.bunny-corner { 
+  margin: 4px 0 22px;
+  padding: 16px;
+  background: #fff5f6;
+  border: 1px sold #f8e1e8;
+  border-radius: 20px;
+}
+
+.bunny-name { 
+  
+}
