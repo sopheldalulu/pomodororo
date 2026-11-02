@@ -97,9 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderBunny() {
-    $("bunnyDisplay").textContent = bunnyName + " ♡";
-    $("carrots").textContent = carrots;
-    $("feedBunny").disabled = carrots < 1;
+    const nameDisplay = document.getElementById("bunnyDisplay");
+    const carrotDisplay = document.getElementById("carrots");
+    const feedButton = document.getElementById("feedBunny");
+    if (nameDisplay) {
+      nameDisplay.textContent = bunnyName + " 🐰";
+    }
+    if (carrotDisplay) {
+      carrotDisplay.textContent = carrots;
+    }
+    if (feedButton) {
+      feedButton.disabled = carrots < 1;
+    }
   }
 
   function duration() {
