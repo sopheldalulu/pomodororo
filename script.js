@@ -223,32 +223,40 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function finish() {
-    stop();
-    remaining = 0;
 
-    $("pet").classList.add("happy");
+function finish() {
+  // Prevent the timer from completing more than once.
+  if (endAt === null) return;
 
-    if (mode === "focus") {
-      completed += 1;
-      carrots += 1;
+  stop();
+  remaining = 0;
 
-      saveStats();
-      saveBunny();
+  $("pet").classList.add("happy");
 
-      if (completed % 4 === 0) {
-        say("4 study sessions! 🥕 +1 carrot! Long break time!");
-      } else {
-        say(`YAY! ${bunnyName} got a carrot! 🥕 +1`);
-      }
-    } else {
-      say(`${bunnyName} is ready to study again! 🌷`);
-    }
+  if (mode === "focus") {
+    // Reward one carrot for a completed study session.
+    completed += 1;
+    carrots += 1;
+
+    saveStats();
+    saveBunny();
 
     render();
-    playSound();
-    sendNotification();
+    renderHappiness();
+
+    say(`YAY! ${bunnyName} earned 1 carrot! 🥕`);
+
+    console.log("Focus session completed!");
+    console.log("Carrot balance:", carrots);
+  } else {
+    render();
+    say(`${bunnyName} is ready to study again! 🌷`);
   }
+
+  playSound();
+  sendNotification();
+}
+
 
   function tick() {
     if (endAt === null) return;
@@ -258,14 +266,13 @@ document.addEventListener("DOMContentLoaded", () => {
       Math.ceil((endAt - Date.now()) / 1000)
     );
 
-    if (remaining === 0) {
+    if (remaining <= 0) {
       finish();
     } else {
       render();
     }
   }
 
-  // Start / pause / resume
   $("toggle").addEventListener("click", () => {
     if (interval !== null) {
       tick();
@@ -312,20 +319,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Reset timer
+  
   $("reset").addEventListener("click", () => {
     select(mode);
     say("Fresh start! You got this ♡");
   });
 
-  // Switch modes
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       select(button.dataset.mode);
     });
   });
 
-  // Apply timer settings
+
   $("apply").addEventListener("click", () => {
     const inputs = [
       ["focus", "focusMinutes", 180],
