@@ -400,43 +400,54 @@ function finish() {
   });
 
   // NEW: Feed the bunny with an earned carrot
-  $("feedBunny").addEventListener("click", () => {
-    if (carrots < 1) {
-      say(`${bunnyName} needs a carrot! Finish a focus sesh 🥕`);
-      return;
-    }
+  
+$("feedBunny").addEventListener("click", () => {
+  if (carrots < 1) {
+    say(`${bunnyName} needs a carrot! Finish a focus sesh 🥕`);
+    return;
+  }
 
-    updateHappinessDecay();
-    happiness = Math.min(100, happiness + 20);
-    carrots -= 1;
-    totalFed += 1;
+  // Apply any happiness decay before feeding.
+  updateHappinessDecay();
 
-    saveBunny();
-    renderBunny();
-    renderHappiness();
+  // Add happiness and spend one carrot.
+  happiness = Math.min(100, happiness + 20);
+  carrots -= 1;
+  totalFed += 1;
 
-    const pet = $("pet");
-    if (munchTimeout !== null) {
-      clearTimeout(munchTimeout);
-    }
+  // Save the updated values.
+  saveBunny();
 
+  // Update the screen.
+  renderBunny();
+  renderHappiness();
+
+  // Play bunny feeding animation.
+  const pet = $("pet");
+
+  if (munchTimeout !== null) {
+    clearTimeout(munchTimeout);
+  }
+
+  pet.classList.remove("munching");
+  void pet.offsetWidth;
+  pet.classList.add("munching", "happy");
+
+  say(`*nom nom nom* ${bunnyName} is happier! 🥕💕`);
+
+  munchTimeout = setTimeout(() => {
     pet.classList.remove("munching");
-    void pet.offsetWidth;
-    pet.classList.add("munching", "happy");
 
-    say(`*nom nom nom* ${bunnyName} is happier! 🥕💕`);
+    if (interval !== null) {
+      pet.classList.remove("happy");
+    }
 
-    munchTimeout = setTimeout(() => {
-      pet.classList.remove("munching");
+    munchTimeout = null;
+  }, 1200);
 
-      if (interval !== null) {
-        pet.classList.remove("happy");
-      }
+  console.log("Happiness after feeding:", happiness);
+});
 
-      munchTimeout = null;
-    }, 1200);
-    console.log("Happiness after feeding:", happiness);
-  });
 
   // Initialize everything
   render();
