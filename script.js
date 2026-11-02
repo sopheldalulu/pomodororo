@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ].join("-");
   }
 
-  // Load saved progress
+
   try {
     const savedStats = JSON.parse(
       localStorage.getItem("cozyFocusStats") || "{}"
