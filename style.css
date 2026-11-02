@@ -364,17 +364,24 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
 }
 
 .happiness-track {
+  display: block;
   width: 100%;
-  height: 13px;
-  background: #f5dfe8;
+  height: 16px;
+  background-color: #f5dfe8;
+  border-radius: 20px;
   overflow: hidden;
+  position: relative;
 }
 
 .happiness-fill {
-  width 70%;
-  height 100%;
-  background: linear-gradient(90deg, #f5a1b9, #d98aa9);
-  transition: width .4s ease, background, .4s ease;
+  display: block;
+  height: 100%;
+  width: 70%;
+  min-width: 0;
+  border-radius: 20px;
+  background-color: #d98aa8;
+  background-image: linear-gradient(90deg, #f5a1b9, #d98aa8);
+  transition: width 0.5s ease;
   }
 
 .happiness-mood {
