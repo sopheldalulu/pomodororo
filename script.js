@@ -406,23 +406,25 @@ function finish() {
       return;
     }
 
+    updateHappinessDecay();
+    happiness = Math.min(100, happiness + 20);
     carrots -= 1;
     totalFed += 1;
 
     saveBunny();
     renderBunny();
+    renderHappiness();
 
     const pet = $("pet");
-
     if (munchTimeout !== null) {
       clearTimeout(munchTimeout);
     }
 
     pet.classList.remove("munching");
-    void pet.offsetWidth; // Restart munch animation
+    void pet.offsetWidth;
     pet.classList.add("munching", "happy");
 
-    say(`*nom nom nom* ${bunnyName} loves you! 🥕💕`);
+    say(`*nom nom nom* ${bunnyName} is happier! 🥕💕`);
 
     munchTimeout = setTimeout(() => {
       pet.classList.remove("munching");
@@ -433,6 +435,7 @@ function finish() {
 
       munchTimeout = null;
     }, 1200);
+    console.log("Happiness after feeding:", happiness);
   });
 
   // Initialize everything
