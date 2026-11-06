@@ -399,3 +399,38 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
 
   }
 
+.bunny-name-button {
+  border: none;
+  background: transparent;
+  color: #775b70;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.bunny-name-button:hover {
+  background: #f9e3eb;
+}
+
+.bunny-name-button:focus-visible {
+  outline: 2px solid #d681a0;
+  outline-offset: 3px;
+}
+
+.rename-row[hidden] {
+  display: none !important;
+}
+
+.rename-row:not([hidden]) {
+  display: flex;
+  margin-top: 10px;
+}
+
+#cancelName {
+  background: #f4e9ed;
+  color: #775e72;
+}

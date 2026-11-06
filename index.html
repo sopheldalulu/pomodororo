@@ -34,13 +34,16 @@
     </div>
 
     <div class="bunny-corner">
-      <div class="bunny name">
-        <span id="bunnyDisplay">my bunny ♡</span>
+      <div class="bunny-name">
+        <button id="bunnyDisplay" class="bunny-name-button" type="button" title="click to rename your bunny">
+          mochi 🐰 ✎
+        </button>
       </div>
 
-      <div class="rename-row">
+      <div class="rename-row" id="renameRow" hidden>
         <input id="bunnyName" type="text" placeholder="name your bunny..." maxlength="20" aria-label="Bunny name">
         <button id="saveName" type="button">save name ♡</button>
+        <button id="cancelName" type="button">cancel</button>
       </div>
 
       <div class="carrot-shop">

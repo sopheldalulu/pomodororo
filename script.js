@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const feedButton = $("feedBunny");
 
     if (nameDisplay) {
-      nameDisplay.textContent = bunnyName + " 🐰";
+      nameDisplay.textContent = bunnyName + " 🐰 ✎";
     }
 
     if (carrotDisplay) {
@@ -606,39 +606,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function saveName() {
-    const newName = $("bunnyName").value.trim();
-
-    if (!newName) {
-      say("Your bunny needs a name! ♡");
-      return;
-    }
-
-    bunnyName = newName.slice(0, 20);
-
-    $("bunnyName").value = "";
-
-    saveBunny();
-    renderBunny();
-
-    say(
-      `Hi! My name is ${bunnyName}! 🐰💕`
-    );
+  function openRename() {
+    $("renameRow").hidden = false;
+    $("bunnyDiplay").hidden = true;
+    $("bunnyName").value = bunnyName;
+    $("bunnyName").focus();
+    $("bunnyName").select();
   }
 
-  $("saveName").addEventListener(
-    "click",
-    saveName
-  );
-
-  $("bunnyName").addEventListener(
-    "keydown",
-    (event) => {
-      if (event.key === "Enter") {
-        saveName();
-      }
+  function closeRename() {
+    $("renameRow").hidden = true;
+    $("bunnyDisplay").hidden = false;
+  }
+  
+  function saveName() {
+    const newName = $("bunnyName").value.trim();
+    
+    if (!newName) {
+      say("your bunny needs a name!");
+      return;
     }
-  );
+    bunnyName = newName.slice(0, 20);
+    saveBunny();
+    renderBunny();
+    closeRename();
+    say(`hi! my name is ${bunnyName}!`);
+  }
+
+  $("bunnyDisplay").addEventListener("click", openRename);
+  $("saveName").addEventListener("click", saveName);
+  $("cancelName").addEventListener("click", closeRename);
+
+  $("bunnyName").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      saveName();
+    }
+    if (event.key === "Escape") {
+      closeRename();
+    }
+  });
 
   $("feedBunny").addEventListener("click", () => {
     updateHappinessDecay();
