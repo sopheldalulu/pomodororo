@@ -56,21 +56,27 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
 }
 
 .pet-zone {
-  height: 215px;
+  min-height: 250px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  padding-top: 12px;
+  padding-bottom: 15px;
+  gap: 35px;
 }
 
 .bubble {
+  position: relative;
+  z-index: 5;
   font-size: 13px;
   background: white;
   border: 1px solid #f8dae4;
   border-radius: 18px;
   padding: 9px 15px;
-  margin: 10px 0 0;
+  margin: 0;
   box-shadow: 0 4px 12px #a06c7b14;
 }
 
@@ -78,7 +84,7 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
   position: relative;
   width: 150px;
   height: 132px;
-  margin-top: 20px;
+  margin-top: 10px;
   background: #f6bdac;
   border: 4px solid #aa7979;
   border-radius: 49% 49% 43% 43%;
