@@ -23,6 +23,35 @@ document.addEventListener("DOMContentLoaded", () => {
   let totalFed = 0;
   let munchTimeout = null;
 
+  //fix
+  let happiness = 70;
+  let lastHappinessUpdate = Date.now();
+
+  const HAPPINESS_DECAY_INTERVAL = 60 * 60 * 1000;
+  function updateHappinessDecay() {
+    const now = Date.now();
+
+    const elapsed = Math.max (
+      0,
+      now - lastHappinessUpdate
+    );
+
+    const hours = Math.floor(elapsed / HAPPINESS_DECAY_INTERVAL);
+
+    if (hours > 0) {
+      happiness = Math.max(
+        0,
+        happiness - hours * 5
+      );
+
+      lastHappinessUpdate +=
+      hours * HAPPINESS_DECAY_INTERVAL;
+      
+      saveBunny();
+    }
+  }
+
+
   function today() {
     const d = new Date();
     return [
@@ -407,18 +436,16 @@ $("feedBunny").addEventListener("click", () => {
     return;
   }
 
-  // Apply any happiness decay before feeding.
+
   updateHappinessDecay();
 
-  // Add happiness and spend one carrot.
+
   happiness = Math.min(100, happiness + 20);
   carrots -= 1;
   totalFed += 1;
 
-  // Save the updated values.
-  saveBunny();
 
-  // Update the screen.
+  saveBunny();
   renderBunny();
   renderHappiness();
 
@@ -432,7 +459,7 @@ $("feedBunny").addEventListener("click", () => {
   pet.classList.remove("munching");
   void pet.offsetWidth;
   pet.classList.add("munching", "happy");
-
+AuthenticatorAssertionResponse.
   say(`*nom nom nom* ${bunnyName} is happier! 🥕💕`);
 
   munchTimeout = setTimeout(() => {
