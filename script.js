@@ -16,44 +16,25 @@ document.addEventListener("DOMContentLoaded", () => {
   let endAt = null;
   let interval = null;
   let completed = 0;
+  let focusSessionStarted = false;
 
-  // Bunny data
   let bunnyName = "Mochi";
   let carrots = 0;
   let totalFed = 0;
-  let munchTimeout = null;
-
-  //fix
   let happiness = 70;
   let lastHappinessUpdate = Date.now();
+  let munchTimeout = null;
 
-  const HAPPINESS_DECAY_INTERVAL = 60 * 60 * 1000;
-  function updateHappinessDecay() {
-    const now = Date.now();
+  const HAPPINESS_DECAY_INTERVAL = 6 * 60 * 60 * 1000;
+  const HAPPINESS_DECAY_AMOUNT = 15;
 
-    const elapsed = Math.max (
-      0,
-      now - lastHappinessUpdate
-    );
-
-    const hours = Math.floor(elapsed / HAPPINESS_DECAY_INTERVAL);
-
-    if (hours > 0) {
-      happiness = Math.max(
-        0,
-        happiness - hours * 5
-      );
-
-      lastHappinessUpdate +=
-      hours * HAPPINESS_DECAY_INTERVAL;
-      
-      saveBunny();
-    }
+  function clampHappiness(value) {
+    return Math.max(0, Math.min(100, value));
   }
-
 
   function today() {
     const d = new Date();
+
     return [
       d.getFullYear(),
       String(d.getMonth() + 1).padStart(2, "0"),
@@ -61,22 +42,27 @@ document.addEventListener("DOMContentLoaded", () => {
     ].join("-");
   }
 
-
   try {
     const savedStats = JSON.parse(
       localStorage.getItem("cozyFocusStats") || "{}"
     );
 
     if (savedStats.day === today()) {
-      completed = Number(savedStats.completed) || 0;
+      completed = Math.max(
+        0,
+        Math.floor(Number(savedStats.completed) || 0)
+      );
     }
 
     const savedBunny = JSON.parse(
       localStorage.getItem("cozyPomopetBunny") || "{}"
     );
 
-    if (typeof savedBunny.name === "string") {
-      bunnyName = savedBunny.name || "Mochi";
+    if (
+      typeof savedBunny.name === "string" &&
+      savedBunny.name.trim()
+    ) {
+      bunnyName = savedBunny.name.slice(0, 20);
     }
 
     carrots = Math.max(
@@ -88,8 +74,20 @@ document.addEventListener("DOMContentLoaded", () => {
       0,
       Math.floor(Number(savedBunny.totalFed) || 0)
     );
+
+    if (Number.isFinite(savedBunny.happiness)) {
+      happiness = clampHappiness(savedBunny.happiness);
+    }
+
+    if (
+      Number.isFinite(savedBunny.lastHappinessUpdate) &&
+      savedBunny.lastHappinessUpdate > 0 &&
+      savedBunny.lastHappinessUpdate <= Date.now()
+    ) {
+      lastHappinessUpdate = savedBunny.lastHappinessUpdate;
+    }
   } catch (error) {
-    console.warn("Could not load saved progress", error);
+    console.warn("Could not load saved progress:", error);
   }
 
   function saveStats() {
@@ -102,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       );
     } catch (error) {
-      console.warn("Could not save sessions", error);
+      console.warn("Could not save sessions:", error);
     }
   }
 
@@ -113,31 +111,123 @@ document.addEventListener("DOMContentLoaded", () => {
         JSON.stringify({
           name: bunnyName,
           carrots,
-          totalFed
+          totalFed,
+          happiness: clampHappiness(happiness),
+          lastHappinessUpdate
         })
       );
     } catch (error) {
-      console.warn("Could not save bunny", error);
+      console.warn("Could not save bunny:", error);
     }
   }
 
   function say(message) {
-    $("message").textContent = message;
+    const messageElement = $("message");
+
+    if (messageElement) {
+      messageElement.textContent = message;
+    }
   }
 
   function renderBunny() {
-    const nameDisplay = document.getElementById("bunnyDisplay");
-    const carrotDisplay = document.getElementById("carrots");
-    const feedButton = document.getElementById("feedBunny");
+    const nameDisplay = $("bunnyDisplay");
+    const carrotDisplay = $("carrots");
+    const feedButton = $("feedBunny");
+
     if (nameDisplay) {
       nameDisplay.textContent = bunnyName + " 🐰";
     }
+
     if (carrotDisplay) {
       carrotDisplay.textContent = carrots;
     }
+
     if (feedButton) {
       feedButton.disabled = carrots < 1;
     }
+  }
+
+  function renderHappiness() {
+    happiness = clampHappiness(happiness);
+
+    const value = $("happinessValue");
+    const fill = $("happinessFill");
+    const meter = $("happinessMeter");
+    const mood = $("happinessMood");
+
+    if (value) {
+      value.textContent = `${happiness} / 100`;
+    }
+
+    if (fill) {
+      fill.style.width = `${happiness}%`;
+      fill.style.height = "100%";
+      fill.style.display = "block";
+
+      if (happiness >= 50) {
+        fill.style.background =
+          "linear-gradient(90deg, #f5a1b9, #d98aa8)";
+      } else if (happiness >= 25) {
+        fill.style.background =
+          "linear-gradient(90deg, #f8c78b, #efa36f)";
+      } else {
+        fill.style.background =
+          "linear-gradient(90deg, #e8b1b1, #d98585)";
+      }
+    }
+
+    if (meter) {
+      meter.setAttribute(
+        "aria-valuenow",
+        String(happiness)
+      );
+    }
+
+    if (mood) {
+      if (happiness >= 80) {
+        mood.textContent = "super happy! 🥰";
+      } else if (happiness >= 50) {
+        mood.textContent = "feeling cozy ♡";
+      } else if (happiness >= 25) {
+        mood.textContent = "a little lonely 🥺";
+      } else {
+        mood.textContent = "needs some love 🥕";
+      }
+    }
+  }
+
+  function updateHappinessDecay() {
+    const now = Date.now();
+
+    const elapsed = Math.max(
+      0,
+      now - lastHappinessUpdate
+    );
+
+    const periods = Math.floor(
+      elapsed / HAPPINESS_DECAY_INTERVAL
+    );
+
+    if (periods > 0) {
+      happiness = clampHappiness(
+        happiness - periods * HAPPINESS_DECAY_AMOUNT
+      );
+
+      lastHappinessUpdate +=
+        periods * HAPPINESS_DECAY_INTERVAL;
+
+      saveBunny();
+      renderHappiness();
+    }
+  }
+
+  function changeHappiness(amount) {
+    updateHappinessDecay();
+
+    happiness = clampHappiness(happiness + amount);
+
+    saveBunny();
+    renderHappiness();
   }
 
   function duration() {
@@ -148,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (interval !== null) {
       clearInterval(interval);
     }
+
     interval = null;
     endAt = null;
   }
@@ -157,47 +248,85 @@ document.addEventListener("DOMContentLoaded", () => {
     const seconds = Math.floor(remaining % 60);
 
     const timeText =
-      String(minutes).padStart(2, "0") + ":" +
+      String(minutes).padStart(2, "0") +
+      ":" +
       String(seconds).padStart(2, "0");
 
     $("time").textContent = timeText;
+
     document.title = timeText + " • Cozy Pomopet";
 
     const pct = Math.min(
       100,
       Math.max(
         0,
-        Math.round((1 - remaining / duration()) * 100)
+        Math.round(
+          (1 - remaining / duration()) * 100
+        )
       )
     );
 
     $("fill").style.width = pct + "%";
-    $("progress").setAttribute("aria-valuenow", pct);
+
+    $("progress").setAttribute(
+      "aria-valuenow",
+      String(pct)
+    );
 
     $("count").textContent = `${completed} / 4`;
 
     $("toggle").textContent =
       interval !== null ? "Ⅱ pause" : "▶ start";
 
-    $("pet").classList.toggle("sleepy", mode !== "focus");
+    $("pet").classList.toggle(
+      "sleepy",
+      mode !== "focus"
+    );
 
     buttons.forEach((button) => {
       const active = button.dataset.mode === mode;
+
       button.classList.toggle("active", active);
-      button.setAttribute("aria-pressed", String(active));
+
+      button.setAttribute(
+        "aria-pressed",
+        String(active)
+      );
     });
 
     renderBunny();
+    renderHappiness();
   }
 
   function select(nextMode) {
-    if (!(nextMode in modes)) return;
+    if (!(nextMode in modes)) {
+      return;
+    }
+
+    if (interval !== null) {
+      tick();
+    }
+
+    const cancelled =
+      mode === "focus" &&
+      focusSessionStarted &&
+      remaining > 0;
+
+    if (cancelled) {
+      changeHappiness(-5);
+    }
+
+    focusSessionStarted = false;
 
     stop();
+
     mode = nextMode;
     remaining = duration();
 
-    $("pet").classList.remove("happy", "munching");
+    $("pet").classList.remove(
+      "happy",
+      "munching"
+    );
 
     if (mode === "focus") {
       say(`${bunnyName} believes in you! ♡`);
@@ -208,14 +337,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     render();
+
+    if (cancelled) {
+      say(`${bunnyName} lost 5 happiness 💔`);
+    }
   }
 
   function playSound() {
     try {
       const AudioClass =
-        window.AudioContext || window.webkitAudioContext;
+        window.AudioContext ||
+        window.webkitAudioContext;
 
-      if (!AudioClass) return;
+      if (!AudioClass) {
+        return;
+      }
 
       const ctx = new AudioClass();
       const osc = ctx.createOscillator();
@@ -224,7 +360,11 @@ document.addEventListener("DOMContentLoaded", () => {
       osc.type = "sine";
       osc.frequency.value = 660;
 
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.setValueAtTime(
+        0.08,
+        ctx.currentTime
+      );
+
       gain.gain.exponentialRampToValueAtTime(
         0.001,
         ctx.currentTime + 0.35
@@ -240,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.close().catch(() => {});
       };
     } catch (error) {
-      console.warn("Audio unavailable", error);
+      console.warn("Audio unavailable:", error);
     }
   }
 
@@ -251,57 +391,78 @@ document.addEventListener("DOMContentLoaded", () => {
         Notification.permission === "granted"
       ) {
         new Notification("Cozy Pomopet 🐰", {
-          body: mode === "focus"
-            ? "You earned a carrot! 🥕"
-            : "Break finished! Ready to study?"
+          body:
+            mode === "focus"
+              ? "You earned a carrot! 🥕"
+              : "Break finished! Ready to study?"
         });
       }
     } catch (error) {
-      console.warn("Notifications unavailable", error);
+      console.warn(
+        "Notifications unavailable:",
+        error
+      );
     }
   }
 
+  function finish() {
+    if (endAt === null) {
+      return;
+    }
 
-function finish() {
-  // Prevent the timer from completing more than once.
-  if (endAt === null) return;
+    focusSessionStarted = false;
 
-  stop();
-  remaining = 0;
+    stop();
 
-  $("pet").classList.add("happy");
+    remaining = 0;
 
-  if (mode === "focus") {
-    // Reward one carrot for a completed study session.
-    completed += 1;
-    carrots += 1;
+    $("pet").classList.add("happy");
 
-    saveStats();
-    saveBunny();
+    if (mode === "focus") {
+      completed += 1;
+      carrots += 1;
 
-    render();
-    renderHappiness();
+      saveStats();
+      saveBunny();
 
-    say(`YAY! ${bunnyName} earned 1 carrot! 🥕`);
+      render();
 
-    console.log("Focus session completed!");
-    console.log("Carrot balance:", carrots);
-  } else {
-    render();
-    say(`${bunnyName} is ready to study again! 🌷`);
+      if (completed % 4 === 0) {
+        say(
+          `YAY! ${bunnyName} earned a carrot! 🥕 Long break time!`
+        );
+      } else {
+        say(
+          `YAY! ${bunnyName} earned 1 carrot! 🥕`
+        );
+      }
+
+      console.log(
+        "Focus complete. Carrots:",
+        carrots
+      );
+    } else {
+      render();
+
+      say(
+        `${bunnyName} is ready to study again! 🌷`
+      );
+    }
+
+    playSound();
+    sendNotification();
   }
 
-  playSound();
-  sendNotification();
-}
-
-
   function tick() {
-    if (endAt === null) return;
+    if (endAt === null) {
+      return;
+    }
 
     remaining = Math.max(
       0,
-      Math.ceil((endAt - Date.now()) / 1000)
+      Math.ceil(
+        (endAt - Date.now()) / 1000
+      )
     );
 
     if (remaining <= 0) {
@@ -315,28 +476,44 @@ function finish() {
     if (interval !== null) {
       tick();
 
-      if (interval === null) return;
+      if (interval === null) {
+        return;
+      }
 
       stop();
-      say(`${bunnyName} is waiting patiently ♡`);
+
+      say(
+        `${bunnyName} is waiting patiently ♡`
+      );
+
       render();
       return;
     }
 
-    if (remaining === 0) {
+    if (remaining <= 0) {
       remaining = duration();
     }
 
     endAt = Date.now() + remaining * 1000;
+
     interval = setInterval(tick, 250);
 
-    $("pet").classList.remove("happy", "munching");
+    if (mode === "focus") {
+      focusSessionStarted = true;
+    }
 
-    say(
-      mode === "focus"
-        ? `Shhh… ${bunnyName} is studying with you 🍓`
-        : `${bunnyName} is resting ☁️`
+    $("pet").classList.remove(
+      "happy",
+      "munching"
     );
+
+    if (mode === "focus") {
+      say(
+        `Shhh… ${bunnyName} is studying with you 🍓`
+      );
+    } else {
+      say(`${bunnyName} is resting ☁️`);
+    }
 
     render();
 
@@ -346,21 +523,35 @@ function finish() {
         Notification.permission === "default" &&
         window.isSecureContext
       ) {
-        const result = Notification.requestPermission();
+        const result =
+          Notification.requestPermission();
 
-        if (result && typeof result.catch === "function") {
+        if (
+          result &&
+          typeof result.catch === "function"
+        ) {
           result.catch(() => {});
         }
       }
     } catch (error) {
-      console.warn("Notification permission unavailable", error);
+      console.warn(
+        "Notification permission unavailable:",
+        error
+      );
     }
   });
 
-  
   $("reset").addEventListener("click", () => {
+    const wasUnfinished =
+      mode === "focus" &&
+      focusSessionStarted &&
+      remaining > 0;
+
     select(mode);
-    say("Fresh start! You got this ♡");
+
+    if (!wasUnfinished) {
+      say("Fresh start! You got this ♡");
+    }
   });
 
   buttons.forEach((button) => {
@@ -368,7 +559,6 @@ function finish() {
       select(button.dataset.mode);
     });
   });
-
 
   $("apply").addEventListener("click", () => {
     const inputs = [
@@ -389,7 +579,10 @@ function finish() {
         n < 1 ||
         n > max
       ) {
-        alert(`Please enter 1–${max} minutes for ${name}.`);
+        alert(
+          `Please enter 1–${max} minutes for ${name}.`
+        );
+
         $(id).focus();
         return;
       }
@@ -398,11 +591,21 @@ function finish() {
     }
 
     Object.assign(modes, updated);
+
+    const wasUnfinished =
+      mode === "focus" &&
+      focusSessionStarted &&
+      remaining > 0;
+
     select(mode);
-    say("New timer settings saved for this visit! 🌷");
+
+    if (!wasUnfinished) {
+      say(
+        "New timer settings saved for this visit! 🌷"
+      );
+    }
   });
 
-  // NEW: Name your bunny
   function saveName() {
     const newName = $("bunnyName").value.trim();
 
@@ -412,72 +615,112 @@ function finish() {
     }
 
     bunnyName = newName.slice(0, 20);
+
     $("bunnyName").value = "";
 
     saveBunny();
     renderBunny();
 
-    say(`Hi! My name is ${bunnyName}! 🐰💕`);
+    say(
+      `Hi! My name is ${bunnyName}! 🐰💕`
+    );
   }
 
-  $("saveName").addEventListener("click", saveName);
+  $("saveName").addEventListener(
+    "click",
+    saveName
+  );
 
-  $("bunnyName").addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      saveName();
+  $("bunnyName").addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        saveName();
+      }
     }
+  );
+
+  $("feedBunny").addEventListener("click", () => {
+    updateHappinessDecay();
+
+    if (carrots < 1) {
+      say(
+        `${bunnyName} needs a carrot! Finish a focus sesh 🥕`
+      );
+      return;
+    }
+
+    if (happiness >= 100) {
+      say(
+        `${bunnyName} is already super happy! Save your carrot! 💗`
+      );
+      return;
+    }
+
+    happiness = clampHappiness(
+      happiness + 20
+    );
+
+    carrots -= 1;
+    totalFed += 1;
+
+    saveBunny();
+    renderBunny();
+    renderHappiness();
+
+    const pet = $("pet");
+
+    if (munchTimeout !== null) {
+      clearTimeout(munchTimeout);
+    }
+
+    pet.classList.remove("munching");
+
+    void pet.offsetWidth;
+
+    pet.classList.add(
+      "munching",
+      "happy"
+    );
+
+    say(
+      `*nom nom nom* ${bunnyName} is happier! 🥕💕`
+    );
+
+    munchTimeout = setTimeout(() => {
+      pet.classList.remove("munching");
+
+      if (interval !== null) {
+        pet.classList.remove("happy");
+      }
+
+      munchTimeout = null;
+    }, 1200);
+
+    console.log(
+      "Happiness after feeding:",
+      happiness
+    );
   });
-
-  // NEW: Feed the bunny with an earned carrot
-  
-$("feedBunny").addEventListener("click", () => {
-  if (carrots < 1) {
-    say(`${bunnyName} needs a carrot! Finish a focus sesh 🥕`);
-    return;
-  }
-
 
   updateHappinessDecay();
 
-
-  happiness = Math.min(100, happiness + 20);
-  carrots -= 1;
-  totalFed += 1;
-
-
-  saveBunny();
-  renderBunny();
-  renderHappiness();
-
-  // Play bunny feeding animation.
-  const pet = $("pet");
-
-  if (munchTimeout !== null) {
-    clearTimeout(munchTimeout);
-  }
-
-  pet.classList.remove("munching");
-  void pet.offsetWidth;
-  pet.classList.add("munching", "happy");
-AuthenticatorAssertionResponse.
-  say(`*nom nom nom* ${bunnyName} is happier! 🥕💕`);
-
-  munchTimeout = setTimeout(() => {
-    pet.classList.remove("munching");
-
-    if (interval !== null) {
-      pet.classList.remove("happy");
-    }
-
-    munchTimeout = null;
-  }, 1200);
-
-  console.log("Happiness after feeding:", happiness);
-});
-
-
-  // Initialize everything
   render();
+
+  setInterval(() => {
+    updateHappinessDecay();
+    renderHappiness();
+  }, 60000);
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (!document.hidden) {
+        updateHappinessDecay();
+        renderHappiness();
+      }
+    }
+  );
 
   console.log("Cozy Pomopet loaded! 🐰");
 });
