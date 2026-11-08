@@ -11,6 +11,26 @@
 <body>
   <div class="app-layout">
 
+    <aside class="todo-panel" aria-label="study to-do list">
+      <h2>my study list 📝</h2>
+      <p class="todo-subtitle">
+        small steps add up ♡
+      </p>
+
+      <form id="todoForm" class="todo-form">
+        <input id="todoInput" type="text" placeholder="what's next?" maxlength="100" aria-label="new study task" required>
+        <button type="submit" aria-label="add a task">+</button>
+      </form>
+      <ul id="todoList" class="todo-list"></ul>
+
+      <div class="todo-footer">
+        <span id="todoProgress">0 of 0 done ♡</span>
+        <button id="clearCompleted" type="button">
+          clear done
+        </button>
+      </div>
+    </aside>
+
     <main class="app">
       <h1>🌸 pomopet 🌸</h1>
       <p class="subtitle">
