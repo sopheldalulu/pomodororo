@@ -608,7 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openRename() {
     $("renameRow").hidden = false;
-    $("bunnyDiplay").hidden = true;
+    $("bunnyDisplay").hidden = true;
     $("bunnyName").value = bunnyName;
     $("bunnyName").focus();
     $("bunnyName").select();
@@ -618,33 +618,51 @@ document.addEventListener("DOMContentLoaded", () => {
     $("renameRow").hidden = true;
     $("bunnyDisplay").hidden = false;
   }
-  
+
   function saveName() {
     const newName = $("bunnyName").value.trim();
-    
+
     if (!newName) {
-      say("your bunny needs a name!");
+      say("Your bunny needs a name! ♡");
       return;
     }
+
     bunnyName = newName.slice(0, 20);
+
     saveBunny();
     renderBunny();
     closeRename();
-    say(`hi! my name is ${bunnyName}!`);
+
+    say(`Hi! My name is ${bunnyName}! 🐰💕`);
   }
 
-  $("bunnyDisplay").addEventListener("click", openRename);
-  $("saveName").addEventListener("click", saveName);
-  $("cancelName").addEventListener("click", closeRename);
+  $("bunnyDisplay").addEventListener(
+    "click",
+    openRename
+  );
 
-  $("bunnyName").addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      saveName();
+  $("saveName").addEventListener(
+    "click",
+    saveName
+  );
+
+  $("cancelName").addEventListener(
+    "click",
+    closeRename
+  );
+
+  $("bunnyName").addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        saveName();
+      }
+
+      if (event.key === "Escape") {
+        closeRename();
+      }
     }
-    if (event.key === "Escape") {
-      closeRename();
-    }
-  });
+  );
 
   $("feedBunny").addEventListener("click", () => {
     updateHappinessDecay();
@@ -703,14 +721,13 @@ document.addEventListener("DOMContentLoaded", () => {
       munchTimeout = null;
     }, 1200);
 
-    
+    console.log(
       "Happiness after feeding:",
       happiness
     );
   });
 
   updateHappinessDecay();
-
   render();
 
   setInterval(() => {
@@ -728,132 +745,148 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  
-const todoForm = $("todoForm");
-const todoInput = $("todoInput");
-const todoList = $("todoList");
-const todoProgress = $("todoProgress");
-const clearCompleted = $("clearCompleted");
+  const todoForm = $("todoForm");
+  const todoInput = $("todoInput");
+  const todoList = $("todoList");
+  const todoProgress = $("todoProgress");
+  const clearCompleted = $("clearCompleted");
 
-let todos = [];
+  let todos = [];
 
-try {
-  const savedTodos = JSON.parse(
-    localStorage.getItem("cozyPomopetTodos") || "[]"
-  );
-
-  if (Array.isArray(savedTodos)) {
-    todos = savedTodos.filter(
-      item =>
-        item &&
-        typeof item.id === "string" &&
-        typeof item.text === "string" &&
-        typeof item.done === "boolean"
-    );
-  }
-} catch (error) {
-  console.warn("Could not load tasks:", error);
-}
-
-function saveTodos() {
   try {
-    localStorage.setItem(
-      "cozyPomopetTodos",
-      JSON.stringify(todos)
+    const savedTodos = JSON.parse(
+      localStorage.getItem("cozyPomopetTodos") || "[]"
     );
+
+    if (Array.isArray(savedTodos)) {
+      todos = savedTodos.filter(
+        item =>
+          item &&
+          typeof item.id === "string" &&
+          typeof item.text === "string" &&
+          typeof item.done === "boolean"
+      );
+    }
   } catch (error) {
-    console.warn("Could not save tasks:", error);
+    console.warn("Could not load tasks:", error);
   }
-}
 
-function renderTodos() {
-  todoList.replaceChildren();
+  function saveTodos() {
+    try {
+      localStorage.setItem(
+        "cozyPomopetTodos",
+        JSON.stringify(todos)
+      );
+    } catch (error) {
+      console.warn("Could not save tasks:", error);
+    }
+  }
 
-  todos.forEach((todo) => {
-    const item = document.createElement("li");
-    item.className = "todo-item";
-
-    if (todo.done) {
-      item.classList.add("completed");
+  function renderTodos() {
+    if (!todoList || !todoProgress || !clearCompleted) {
+      return;
     }
 
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.done;
-    checkbox.setAttribute(
-      "aria-label",
-      `Complete ${todo.text}`
-    );
+    todoList.replaceChildren();
 
-    checkbox.addEventListener("change", () => {
-      todo.done = checkbox.checked;
+    todos.forEach((todo) => {
+      const item = document.createElement("li");
+      item.className = "todo-item";
+
+      if (todo.done) {
+        item.classList.add("completed");
+      }
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = todo.done;
+
+      checkbox.setAttribute(
+        "aria-label",
+        `Complete ${todo.text}`
+      );
+
+      checkbox.addEventListener("change", () => {
+        todo.done = checkbox.checked;
+        saveTodos();
+        renderTodos();
+      });
+
+      const text = document.createElement("span");
+      text.className = "todo-text";
+      text.textContent = todo.text;
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "todo-delete";
+      deleteButton.textContent = "×";
+
+      deleteButton.setAttribute(
+        "aria-label",
+        `Delete ${todo.text}`
+      );
+
+      deleteButton.addEventListener("click", () => {
+        todos = todos.filter(t => t.id !== todo.id);
+        saveTodos();
+        renderTodos();
+      });
+
+      item.append(checkbox, text, deleteButton);
+      todoList.appendChild(item);
+    });
+
+    const doneCount = todos.filter(t => t.done).length;
+
+    todoProgress.textContent =
+      `${doneCount} of ${todos.length} done ♡`;
+
+    clearCompleted.disabled = doneCount === 0;
+  }
+
+  if (
+    todoForm &&
+    todoInput &&
+    todoList &&
+    todoProgress &&
+    clearCompleted
+  ) {
+    todoForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const taskText = todoInput.value.trim();
+
+      if (!taskText) {
+        return;
+      }
+
+      const id =
+        typeof crypto !== "undefined" &&
+        typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random()}`;
+
+      todos.push({
+        id,
+        text: taskText.slice(0, 100),
+        done: false
+      });
+
+      todoInput.value = "";
+
+      saveTodos();
+      renderTodos();
+      todoInput.focus();
+    });
+
+    clearCompleted.addEventListener("click", () => {
+      todos = todos.filter(todo => !todo.done);
       saveTodos();
       renderTodos();
     });
 
-    const text = document.createElement("span");
-    text.className = "todo-text";
-    text.textContent = todo.text;
-
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.className = "todo-delete";
-    deleteButton.textContent = "×";
-    deleteButton.setAttribute(
-      "aria-label",
-      `Delete ${todo.text}`
-    );
-
-    deleteButton.addEventListener("click", () => {
-      todos = todos.filter(t => t.id !== todo.id);
-      saveTodos();
-      renderTodos();
-    });
-
-    item.append(checkbox, text, deleteButton);
-    todoList.appendChild(item);
-  });
-
-  const doneCount = todos.filter(t => t.done).length;
-
-  todoProgress.textContent =
-    `${doneCount} of ${todos.length} done ♡`;
-
-  clearCompleted.disabled = doneCount === 0;
-}
-
-todoForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const text = todoInput.value.trim();
-
-  if (!text) return;
-
-  todos.push({
-    id: crypto.randomUUID
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random()}`,
-    text: text.slice(0, 100),
-    done: false
-  });
-
-  todoInput.value = "";
-
-  saveTodos();
-  renderTodos();
-  todoInput.focus();
-});
-
-clearCompleted.addEventListener("click", () => {
-  todos = todos.filter(todo => !todo.done);
-  saveTodos();
-  renderTodos();
-});
-
-renderTodos();
-
-
-
+    renderTodos();
+  }
 
   console.log("Cozy Pomopet loaded! 🐰");
 });
