@@ -434,3 +434,276 @@ h1 { margin: 0; font-size: 29px; color: #6c5366; }
   background: #f4e9ed;
   color: #775e72;
 }
+/* new */
+.app-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 440px) minmax(0, 310px);
+  align-items: start;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  max-width: 772px;
+  margin: 0 auto;
+}
+
+.app {
+  width: 100%;
+  min-width: 0;
+}
+
+.side-panel {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  border-radius: 30px;
+  background: #ffffffed;
+  border: 2px solid #fff;
+  box-shadow: 0 20px 60px #8a68701f;
+  color: 775b70;
+  text-align: left;
+}
+
+.side-panel h2 {
+  margin: 0;
+  color: #70586d;
+  font-size: 17px;
+  color: #a68e9c;
+}
+
+.panel-subtitle {
+  margin: 5px 0 17px;
+  font-size: 12px;
+  color: #a68e9c;
+}
+
+.panel-section {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid #f3dfe5;
+}
+
+.bunny-name-area {
+  margin: 4px 0 24px;
+  text-align: center;
+}
+
+.bunny-name-button {
+  background: transparent;
+  color: #775b70;
+  border: 0;
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bunny-name-button:hover {
+  background: #fff0f4;
+}
+
+.bunny-name-button:focus-visible {
+  outline: 2px solid #d681a0;
+  outline-offset: 3px;
+}
+
+.rename-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.rename-row[hidden],
+.bunny-name-button[hidden] {
+  display: none !important;
+}
+
+.rename-row input {
+  flex: 1 1 130px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #edd7df;
+  border-radius: 12px;
+  font: inherit;
+  color: #70586d;
+}
+
+.rename-row button {
+  border: 0;
+  padding: 10px;
+  border-radius: 11px;
+  background: #eeb2c5;
+  color: #674d61;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#cancelName { 
+  background: #f4e9ed
+}
+
+.side-panel .carrot-shop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  border: 0;
+  border-radius: 16px;
+  background: #fff5f6;
+}
+
+.side-panel .carrot-balance {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #907b89;
+}
+
+.side-panel .carrot-balance strong {
+  background: white;
+  padding: 5px 9px;
+  border-radius: 9px;
+  color: #d681a0;
+}
+
+#feedBunny {
+  border: 0;
+  border-radius: 12px;
+  background: #f6c3a5;
+  color: #79513c;
+  padding: 10px;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#feedBunny:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.side-panel .happiness-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f3dfe5;
+}
+
+.happiness-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+  font-size: 13px;
+  color: #907b89;
+}
+
+.happiness-label strong {
+  color: #70586d;
+  white-space: nowrap;
+}
+
+.happiness-track {
+  display: block;
+  width: 100%;
+  height: 14px;
+  background: #f5dfe8;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.happiness-fill {
+  display: block;
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #f5a1b9, #d98aa8);
+  transition: width 0.5s ease;
+}
+
+.happiness-mood {
+  text-align: center;
+  font-size: 12px;
+  color: #aa8196;
+  margin: 10px 0 0;
+}
+
+.side-panel .stats {
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.side-panel .stats strong {
+  color: #d681a0;
+}
+
+.side-panel .settings {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.side-panel .settings label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 13px;
+}
+
+.side-panel .settings input {
+  width: 58px;
+  margin-left: auto;
+  padding: 8px 5px;
+  border: 1px solid #edd7df;
+  border-radius: 9px;
+  text-align: center;
+  font-family: inherit;
+  color: #70586d;
+  background: white;
+}
+
+.side-panel .settings button {
+  width: 100%;
+  padding: 11px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 12px;
+  background: #d681a0;
+  color: white;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.side-panel .settings button:hover {
+  background: #c97496;
+}
+
+@media (max-width: 750px) {
+  .app-layout {
+    grid-template-columns: minmax(0, 440px);
+    max-width: 440px;
+    gap: 18px;
+  }
+
+  .side-panel {
+    padding: 22px;
+  }
+}
+
+

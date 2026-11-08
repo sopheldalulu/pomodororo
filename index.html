@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,43 +9,92 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="app">
-    <h1>🌸 pomopet 🌸</h1>
-    <p class="subtitle">little steps, big dreams. ur bunny believes in u!</p>
+  <div class="app-layout">
 
-    <div class="tabs" role="group" aria-label="Timer mode">
-      <button class="active" data-mode="focus">🍓 Focus</button>
-      <button data-mode="short">☁️ short break</button>
-      <button data-mode="long">🌙 song break</button>
-    </div>
+    <main class="app">
+      <h1>🌸 pomopet 🌸</h1>
+      <p class="subtitle">
+        little steps, big dreams. ur bunny believes in u!
+      </p>
 
-    <div class="pet-zone">
-      <div class="bubble" id="message" aria-live="polite">ready 2 grow together? ♡</div>
-      <div class="pet" id="pet" role="img" aria-label="Cute peach bunny">
-        <div class="ear left"></div>
-        <div class="ear right"></div>
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="cheek left"></div>
-        <div class="cheek right"></div>
-        <div class="nose"></div>
-        <div class="mouth"></div>
+      <div class="tabs" role="group" aria-label="Timer mode">
+        <button class="active" data-mode="focus">🍓 Focus</button>
+        <button data-mode="short">☁️ short break</button>
+        <button data-mode="long">🌙 song break</button>
       </div>
-      <span class="sparkle">✦</span>
-    </div>
 
-    <div class="bunny-corner">
-      <div class="bunny-name">
-        <button id="bunnyDisplay" class="bunny-name-button" type="button" title="click to rename your bunny">
-          mochi 🐰 ✎
+      <div class="pet-zone">
+        <div class="bubble" id="message" aria-live="polite">
+          ready 2 grow together? ♡
+        </div>
+
+        <div class="pet" id="pet" role="img" aria-label="Cute peach bunny">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="cheek left"></div>
+          <div class="cheek right"></div>
+          <div class="nose"></div>
+          <div class="mouth"></div>
+        </div>
+
+        <span class="sparkle">✦</span>
+      </div>
+
+      <div class="bunny-name-area">
+        <button
+          id="bunnyDisplay"
+          class="bunny-name-button"
+          type="button"
+          title="Click to rename your bunny"
+        >
+          Mochi 🐰 ✎
         </button>
+
+        <div class="rename-row" id="renameRow" hidden>
+          <input
+            id="bunnyName"
+            type="text"
+            placeholder="name your bunny..."
+            maxlength="20"
+            aria-label="Bunny name"
+          >
+          <button id="saveName" type="button">save ♡</button>
+          <button id="cancelName" type="button">cancel</button>
+        </div>
       </div>
 
-      <div class="rename-row" id="renameRow" hidden>
-        <input id="bunnyName" type="text" placeholder="name your bunny..." maxlength="20" aria-label="Bunny name">
-        <button id="saveName" type="button">save name ♡</button>
-        <button id="cancelName" type="button">cancel</button>
+      <div class="time" id="time" role="timer" aria-label="Time remaining">
+        25:00
       </div>
+
+      <div
+        class="progress"
+        role="progressbar"
+        aria-label="Session progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        id="progress"
+      >
+        <div class="fill" id="fill"></div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="toggle">▶ start</button>
+        <button id="reset">↻ reset</button>
+      </div>
+
+      <p class="footer">
+        tip: complete 4 focus sessions, then enjoy a long break ✨
+      </p>
+    </main>
+
+    <aside class="side-panel" aria-label="Bunny care and timer settings">
+
+      <h2>♡ bunny care</h2>
+      <p class="panel-subtitle">take care of your study buddy!</p>
 
       <div class="carrot-shop">
         <div class="carrot-balance">
@@ -52,17 +102,31 @@
           <strong id="carrots">0</strong>
         </div>
 
-        <button id="feedBunny" type="button">🥕 feed bunny</button>
+        <button id="feedBunny" type="button">
+          🥕 feed bunny
+        </button>
       </div>
 
       <div class="happiness-section">
-        <div class="happiness-level">
-          <span>bunny happiness 💗</span>
+        <div class="happiness-label">
+          <span>💗 bunny happiness</span>
           <strong id="happinessValue">70 / 100</strong>
         </div>
 
-        <div class="happiness-track" id="happinessMeter" role="progressbar" aria-label="Bunny happiness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
-          <div class="happiness-fill" id="happinessFill" style="width: 70%"></div>
+        <div
+          class="happiness-track"
+          id="happinessMeter"
+          role="progressbar"
+          aria-label="Bunny happiness"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="70"
+        >
+          <div
+            class="happiness-fill"
+            id="happinessFill"
+            style="width:70%;"
+          ></div>
         </div>
 
         <p class="happiness-mood" id="happinessMood">
@@ -70,31 +134,65 @@
         </p>
       </div>
 
-    </div>
+      <div class="panel-section">
+        <h2>🍓 study progress</h2>
 
-    <div class="time" id="time" role="timer" aria-label="Time remaining">25:00</div>
-    <div class="progress" role="progressbar" aria-label="Session progress" aria-valuemin="0" aria-valuemax="100" ariavaluenow="0" id="progress">
-      <div class="fill" id="fill"></div>
-    </div>
+        <div class="stats">
+          <span>focus sessions today</span>
+          <strong id="count">0 / 4</strong>
+        </div>
+      </div>
 
-    <div class="controls">
-      <button class="primary" id="toggle">▶ start</button>
-      <button id="reset">↻ reset</button>
-    </div>
+      <div class="panel-section">
+        <h2>⚙️ timer settings</h2>
+        <p class="panel-subtitle">
+          customize your study routine ♡
+        </p>
 
-    <div class="stats">
-      <span>🍓 focus sessions today</span>
-      <strong id="count">0 / 4</strong>
-    </div>
+        <div class="settings">
+          <label>
+            🍓 focus
+            <input
+              id="focusMinutes"
+              type="number"
+              min="1"
+              max="180"
+              value="25"
+            >
+            min
+          </label>
 
-    <div class="settings">
-      <label>focus <input id="focusMinutes" type="number" min="1" max="180" value="25">min</label>
-      <label>short <input id="shortMinutes" type="number" min="1" max="60" value="5">min</label>
-      <label>long <input id="longMinutes" type="number" min="1" max="120" value="15">min</label>
-      <button id="apply">apply</button>
-    </div>
+          <label>
+            ☁️ short
+            <input
+              id="shortMinutes"
+              type="number"
+              min="1"
+              max="60"
+              value="5"
+            >
+            min
+          </label>
 
-    <p class="footer">tip: complete 4 focus sessions, then enjoy a long break ✨</p>
-  </main>
+          <label>
+            🌙 long
+            <input
+              id="longMinutes"
+              type="number"
+              min="1"
+              max="120"
+              value="15"
+            >
+            min
+          </label>
+
+          <button id="apply" type="button">
+            apply settings ♡
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
 </body>
 </html>
