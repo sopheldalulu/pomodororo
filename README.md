@@ -1,4 +1,2 @@
 # pomodororo
-a pomodoro timer i made with a pet bunny! warning: it is a big buggy at the moment and the styling is a bit odd.
-has the basic pomodoro timer features and i will add more things in the future like naming the pet bunny and more customization options.
-i definitely want to add more of a cozy environment so students and study with the timer :>
+pomopet is a cozy study timer designed to make studying more fun and motivating! 🐰 i added customizable focus and break timers, a cute bunny that users can name, a carrot reward system for completing study sessions, and a happiness meter that changes when the bunny is fed or sessions are canceled. i also added a to-do list to organize study tasks, daily focus session tracking, and a three-panel pastel layout. everything is saved using local storage so users can keep their progress!
